@@ -1,0 +1,21 @@
+version: "3"
+
+tasks:
+  default:
+    desc: Show available index workflows
+    cmds:
+      - task --list
+
+  index:verify:
+    desc: Verify a nonempty package index and positive archived file count
+    preconditions:
+      - sh: |
+          case "${INDEX_COUNT:-}" in
+            ''|*[!0-9]*) exit 1 ;;
+          esac
+          [ "$INDEX_COUNT" -gt 0 ]
+        msg: INDEX_COUNT must be a strictly positive integer
+      - sh: '[ -n "${INDEX_DIR:-}" ] && [ -s "$INDEX_DIR/simple/index.html" ]'
+        msg: INDEX_DIR must contain a nonempty simple/index.html
+    cmds:
+      - echo "Verified ${INDEX_COUNT} archived distributions in ${INDEX_DIR}/simple/"
