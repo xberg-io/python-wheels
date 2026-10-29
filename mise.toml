@@ -3,5 +3,10 @@
 lockfile = true
 lockfile_platforms = ["linux-x64", "linux-arm64", "macos-arm64", "windows-x64"]
 
+# archive-python runs python3 from PATH; the pin makes the index build use this version. ~keep
 [tools]
-task = "3.54.0"
+python = "3.13.18"
+
+[tasks.default]
+description = "Show available index workflows"
+run = "mise tasks ls"
