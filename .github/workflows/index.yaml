@@ -15,11 +15,8 @@ permissions:
   id-token: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Check out index repository
         uses: actions/checkout@v7
@@ -43,6 +40,16 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: site
+
+  # ~keep A separate job: deploy-pages lists the run's artifacts, and in the same job as the upload that listing
+  # ~keep twice returned none ("No artifacts named github-pages"), so the index never went live.
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
